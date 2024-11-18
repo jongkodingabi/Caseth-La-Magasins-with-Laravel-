@@ -55,7 +55,7 @@
                 </div>
                 <div class="flex items-center max-[500px]:justify-center h-full max-md:mt-3">
                     <div class="flex items-center justify-center h-full" style="flex-direction: row;">
-                        <form action="{{ route('cart.update') }}" method="POST" style="display: inline;">
+                        <form action="{{ route('cart.remove') }}" method="POST" style="display: inline;">
                             @csrf
                             <input type="hidden" name="id" value="{{ $item->product->id }}">
                             <button type="submit" name="quantity" value="{{ $item->quantity - 1 }}" class="group rounded-l-xl px-5 py-[18px] border border-gray-200 flex items-center justify-center shadow-sm transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 focus-within:outline-gray-300">
@@ -209,11 +209,9 @@
                             <input
                             type="submit" name="checkCost" class="rounded-lg w-full bg-rose-400 py-2.5 px-4 text-white text-sm font-semibold text-center mb-8 transition-all duration-500 hover:bg-rose-300">
                         </div>
-
                         <div class="mt-5">
                         @if ($cost != '')
                             <h4 class="mb-3 font-bold">Rincian Ongkir</h4>
-                            
                             <h2 class="mb-3">
                                 <ul>
                                     <li class="font-semibold">Asal Kota: <span class="font-light">{{ $cost['origin_details']['city_name'] }}</span></li>
@@ -237,7 +235,6 @@
                                                 @endforeach
                                             </div>
                                             @break
-                                        @endif
                                             @endforeach
                                         </div>
                             @endforeach
@@ -251,13 +248,13 @@
                     </form>
                 </div>
             </div>
+            @endif
             @else
             <p class="text-center font-semibold text-lg">Your cart is empty.</p>
-        @endif
 @endif
 </div>
 </section>
-<x-alert></x-alert>
 <x-footer></x-footer>
+<x-alert></x-alert>
 <x-icon-j-s></x-icon-j-s>
 </body>
