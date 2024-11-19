@@ -42,6 +42,7 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'removeCart'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
+Route::post('/cart/apply-discount', [CartController::class, 'applyDiscount'])->name('cart.apply-discount');
 Route::post('/cart', [CartController::class, 'checkCost'])->name('cart.checkCost');
 
 
