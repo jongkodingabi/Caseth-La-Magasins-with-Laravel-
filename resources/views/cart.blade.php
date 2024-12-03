@@ -1,13 +1,14 @@
 <!-- Shopping Cart start -->
 <x-header>
     <link rel="stylesheet" href="{{ asset('asset-views/css/style2.css?v=1.0') }}" />
-    @vite('resources/css/app.css')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </x-header>
 
 <body>
     <x-navbar></x-navbar>
 
+
+    {{-- Cart List Start --}}
     <section
         class="mt-20 relative z-10 after:contents-[''] after:absolute after:z-0 after:h-full xl:after:w-1/3 after:top-0 after:right-0 after:bg-gray-50">
         <div class="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto relative z-10">
@@ -44,7 +45,7 @@
                     @foreach ($cartItems as $item)
                         <div
                             class="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6 border-b border-gray-200 group">
-                            <div class="w-full md:max-w-[126px]">
+                            <div class="w-full max-w-[126px] sm:justify-center">
                                 <img src="{{ asset('asset-views/img/products/' . $item->product->picture) }}"
                                     alt="" class="mx-auto rounded-xl object-cover">
                             </div>
@@ -113,22 +114,11 @@
                     <div class="flex justify-end mt-4">
                         <h3 class="font-bold text-xl">Total: Rp {{ number_format($totalPrice, 2) }}</h3>
                     </div>
-
-                    <div class="flex items-center justify-end mt-8">
-                        <button
-                            class="flex items-center px-5 py-3 rounded-full gap-2 border-none outline-0 group font-semibold text-lg leading-8 text-indigo-600 shadow-sm shadow-transparent transition-all duration-500 hover:text-indigo-700">
-                            Add Coupon Code
-                            <svg class="transition-all duration-500 group-hover:translate-x-2"
-                                xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
-                                fill="none">
-                                <path
-                                    d="M12.7757 5.5L18.3319 11.0562M18.3319 11.0562L12.7757 16.6125M18.3319 11.0562L1.83203 11.0562"
-                                    stroke="#4F46E5" stroke-width="1.6" stroke-linecap="round" />
-                            </svg>
-                        </button>
-                    </div>
                 </div>
-                {{-- DETAIL ORDER --}}
+                {{-- Cart List End --}}
+
+
+                {{-- Detail Order Start --}}
                 <div
                     class="col-span-12 xl:col-span-4 bg-gray-50 w-full max-xl:px-6 max-w-3xl xl:max-w-lg mx-auto lg:pl-8 py-24">
                     <h2 class="font-manrope font-bold text-3xl leading-10 text-black pb-8 border-b border-gray-300">
@@ -243,23 +233,35 @@
                                 <input type="submit" name="checkCost"
                                     class="rounded-lg w-full bg-rose-400 py-2.5 px-4 text-white text-sm font-semibold text-center mb-8 transition-all duration-500 hover:bg-rose-300">
                             </div>
+                            {{-- Order Sumarry End --}}
+
+
+                            {{-- Apply Cost Start --}}
                             <div class="mt-5">
-                                @if ($cost != '')
+                                @if (!empty($cost))
                                     <h4 class="mb-3 font-bold">Rincian Ongkir</h4>
                                     <h2 class="mb-3">
                                         <ul>
-                                            <li class="font-semibold">Asal Kota: <span
-                                                    class="font-light">{{ $cost['origin_details']['city_name'] }}</span>
-                                            </li>
-                                            <li class="font-semibold">Kota Tujuan: <span
-                                                    class="font-light">{{ $cost['destination_details']['city_name'] }}</span>
-                                            </li>
+                                            @if (isset($originDetails['city_name']) && isset($destinationDetails['city_name']))
+                                                <li class="font-semibold">Asal Kota: <span
+                                                        class="font-light">{{ $originDetails['city_name'] ?? 'Tidak tersedia' }}</span>
+                                                </li>
+                                                <li class="font-semibold">Kota Tujuan: <span
+                                                        class="font-light">{{ $destinationDetails['city_name'] ?? 'Tidak tersedia' }}</span>
+                                                </li>
+                                            @else
+                                                <p class="text-gray-500">Detail kota asal atau tujuan belum tersedia.
+                                                </p>
+                                            @endif
+
                                             <li class="font-semibold">Berat Paket: <span
-                                                    class="font-light">{{ $cost['query']['weight'] }} gram</span></li>
+                                                    class="font-light">{{ $weight ?? 'Tidak tersedia' }} gram</span>
+                                            </li>
                                         </ul>
                                     </h2>
 
-                                    @foreach ($cost['results'] as $TotalCost)
+
+                                    @foreach ($cost as $TotalCost)
                                         <div>
                                             <label for="name">Name: {{ $TotalCost['name'] }}</label>
                                             @foreach ($TotalCost['costs'] as $costs)
@@ -280,20 +282,26 @@
                                 @endforeach
                         </div>
                         <div class="flex items-center justify-between py-8">
+                            <p class="font-semibold text-xl text-slate-500 leading-8">Promo</p>
+                            <p class="font-semibold text-xl leading-8 text-rose-300">Rp
+                                - {{ number_format($promo, 2) }}</p>
+                        </div>
+                        <div class="flex items-center justify-between py-8">
                             <p class="font-medium text-xl leading-8 text-black">{{ $totalItems }} Items</p>
                             <p class="font-semibold text-xl leading-8 text-rose-300">Rp
-                                {{ number_format($totalPrice, 2) }}</p>
+                                {{ number_format($totalAll, 2) }}</p>
                         </div>
+                        <h2 class="text-base text-rose-300">Promo Diaktifkan</h2>
                         <button
                             class="w-full text-center bg-rose-200 rounded-xl py-3 px-6 font-semibold text-lg text-white transition-all duration-500 hover:bg-rose-300">Checkout</button>
                     </form>
                 </div>
+                @endif
+            @else
+                <p class="text-center font-semibold text-lg">Your cart is empty.</p>
+                @endif
             </div>
-            @endif
-        @else
-            <p class="text-center font-semibold text-lg">Your cart is empty.</p>
-            @endif
-        </div>
+            {{-- Apply Cost End --}}
 </section>
 <x-footer></x-footer>
 <x-alert></x-alert>

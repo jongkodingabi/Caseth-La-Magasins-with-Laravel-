@@ -90,7 +90,7 @@ class CartController extends Controller
                         'quantity' => $request->quantity
                     ]);
             }
-                return redirect()->route('cart.list')->with('success', 'Cart updated successfully!');
+                return redirect()->route('cart.list');
 
                 return redirect()->back()->with('error', 'Cart item not found.');
 
@@ -146,10 +146,16 @@ class CartController extends Controller
     {
         $cartItem = Cart::where('user_id', Auth::id())->where('product_id', $request->id)->first();
 
-        if($cartItem) {
+       if ($cartItem) {
+        // Kurangi QTY
+         if ($cartItem->quantity > 1) {
+            $cartItem->quantity -= 1;
+            $cartItem->save();
+         } else {
             $cartItem->delete();
+         }
 
-            return redirect()->route('cart.list')->with('success', 'Item removed from cart!');
+            return redirect()->route('cart.list');
             }
 
             return redirect()->back()->with('error', 'Cart item not found.');
@@ -165,8 +171,16 @@ class CartController extends Controller
 
 
     // Menampilkan cart dengan provinsi
-    public function checkCost(Request $request) {
-
+    public function checkCost(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'origin' => 'required|integer',
+            'destination' => 'required|integer',
+            'weight' => 'required|numeric|min:1',
+            'courier' => 'required|string',
+        ]);
+    
         // Ambil data keranjang
         $cartItems = Cart::where('user_id', Auth::id())->get();
         $totalPrice = 0;
@@ -174,28 +188,70 @@ class CartController extends Controller
     
         foreach ($cartItems as $item) {
             $totalPrice += $item->product->price * $item->quantity;
-    
         }
-
+    
+        // API untuk mendapatkan data kota
         $response = Http::withHeaders([
             'key' => '316e4f0570ad8482913c3cd334873531'
-                ])->get('https://api.rajaongkir.com/starter/city');
+        ])->get('https://api.rajaongkir.com/starter/city');
+    
+        if (!$response->successful()) {
+            return back()->with('error', 'Gagal mengambil data kota.');
+        }
+    
+        $cities = $response->json()['rajaongkir']['results'] ?? [];
+    
 
 
+        // API untuk menghitung ongkos kirim
         $responseCost = Http::withHeaders([
             'key' => '316e4f0570ad8482913c3cd334873531'
-                ])->post('https://api.rajaongkir.com/starter/cost', [
-                    'origin' => $request->origin,
-                    'destination' => $request->destination,
-                    'weight' => $request->weight,
-                    'courier' => $request->courier,
-                ]);
-
-            $cities = $response['rajaongkir']['results'];
-            
-            $cost = $responseCost['rajaongkir'];
-
-            return view('cart',['cities' => $cities, 'cost' => $cost, 'cartItems' => $cartItems, 'totalPrice' => $totalPrice, 'totalItems' => $totalItems]);
-
+        ])->post('https://api.rajaongkir.com/starter/cost', [
+            'origin' => $request->origin,
+            'destination' => $request->destination,
+            'weight' => $request->weight,
+            'courier' => $request->courier,
+        ]);
+    
+        if (!$responseCost->successful()) {
+            return back()->with('error', 'Gagal menghitung ongkos kirim.');
         }
+    
+        $costResults = $responseCost->json()['rajaongkir']['results'] ?? [];
+
+        // Validasi dan ekstrak data ongkos kirim
+        $cost = 0;
+    
+       if (!empty($costResults) && isset($costResults[0]['costs']) &&
+       isset($costResults[0]['costs'][0]['cost']) &&
+       isset($costResults[0]['costs'][0]['cost'][0]['value'])
+       ) {
+        $cost = $costResults[0]['costs'][0]['cost'][0]['value'];
+       }
+
+       $discount = 20000;
+
+        // Menghitung total keseluruhan
+        $totalAll = $totalPrice + $cost - $discount;
+     
+        return view('cart',[
+        'cities' => $cities,
+        'cartItems' => $cartItems,
+        'totalPrice' => $totalPrice,
+        'totalItems' => $totalItems,
+        'totalAll' => $totalAll,
+        'cost' => $costResults,
+        'promo' => $discount,
+        'originDetails' => [
+            'city_id' => $request->origin,
+            'city_name' => $cities[$request->origin]['city_name'] ?? 'tidak diketahui',
+        ],
+        'destinationDetails' => [
+            'city_id' => $request->destination,
+            'city_name' => $cities[$request->destination]['city_name'] ?? 'tidak diketahui',
+        ],
+        'weight' => $request->weight,
+        ]);
+    }
+    
 }
