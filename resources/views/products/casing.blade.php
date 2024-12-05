@@ -5,10 +5,17 @@
 
 <body>
     <x-navbar></x-navbar>
+    {{-- Hero Section Start --}}
+    <section class="relative h-[50vh] bg-cover bg-center"
+        style="background-image: url(' {{ asset('asset-views/img/hero-bg.jpg') }} ')">
+        <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
+            <h1 class="text-white text-4xl font-bold"><span>Casing</span> Products</h1>
+            <p class="py-3 text-base text-rose-300">Offers Casing that can beautify your day.</p>
+            <p class="text-white cursor-pointer">Back / <span class="text-rose-400 hover:underline">Home</span></p>
+        </div>
+    </section>
+    {{-- Hero Section End --}}
     <section id="casing" class="menu">
-        <h2><span>Casing</span> Products</h2>
-        <p>Offers Casing that can beautify your day.</p>
-        <br>
         <div id="custom-pagination" class="pagination">
             {{ $products->links() }} <!-- Pagination links -->
         </div>

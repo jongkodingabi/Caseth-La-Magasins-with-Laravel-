@@ -23,6 +23,10 @@
     <!-- App -->
     <script src="{{ asset('asset-views/src/app.js') }}"></script>
 
+    {{-- LINK NPM --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     {{-- Tailwind link --}}
     @vite('resources/css/app.css')
 

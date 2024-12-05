@@ -21,7 +21,7 @@
         @auth
             <a href="/cart" id="shopping-cart-button">
                 <i data-feather="shopping-cart"></i>
-                <span class="quantity-badge" x-text="$store.cart.quantity" x-show="$store.cart.quantity > 0"></span>
+                <span class="quantity-badge">{{ $totalItems ?? 0 }}</span>
             </a>
 
             <a href="{{ route('profile.edit') }}">

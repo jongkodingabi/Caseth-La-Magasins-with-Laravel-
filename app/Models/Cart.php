@@ -16,7 +16,6 @@ class Cart extends Model
         'product_id',
         'price',
         'quantity',
-        'quantity'
     ];
 
     // Relasi ke model user

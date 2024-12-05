@@ -152,6 +152,7 @@ body {
     position: absolute;
     font-size: 0.8rem;
     top: 0;
+    color: #fff;
     right: -10px;
 }
 .shopping-cart {
@@ -613,7 +614,7 @@ footer {
     background-color: var(--primary);
     text-align: center;
     padding: 1rem 0;
-    margin-top: 3rem 0.5rem;
+    margin-top: auto;
 }
 
 footer .social {

@@ -6,11 +6,19 @@
 
 <body>
     <x-navbar></x-navbar>
-
+    {{-- Hero Section Start --}}
+    <section class="relative h-[50vh] bg-cover bg-center"
+        style="background-image: url(' {{ asset('asset-views/img/hero-bg.jpg') }} ')">
+        <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
+            <h1 class="text-white text-4xl font-bold">Cart</h1>
+            <p class="text-white cursor-pointer">Back / <span class="text-rose-400 hover:underline">Home</span></p>
+        </div>
+    </section>
+    {{-- Hero Section End --}}
 
     {{-- Cart List Start --}}
     <section
-        class="mt-20 relative z-10 after:contents-[''] after:absolute after:z-0 after:h-full xl:after:w-1/3 after:top-0 after:right-0 after:bg-gray-50">
+        class="relative z-10 after:contents-[''] after:absolute after:z-0 after:h-full xl:after:w-1/3 after:top-0 after:right-0 after:bg-gray-50">
         <div class="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto relative z-10">
             <div class="grid grid-cols-12">
                 <div
@@ -297,13 +305,15 @@
                     </form>
                 </div>
                 @endif
-            @else
-                <p class="text-center font-semibold text-lg">Your cart is empty.</p>
-                @endif
-            </div>
-            {{-- Apply Cost End --}}
 </section>
 <x-footer></x-footer>
+@else
+<p class="text-center font-semibold text-lg">Your cart is empty.</p>
+@endif
+</div>
+{{-- Apply Cost End --}}
 <x-alert></x-alert>
 <x-icon-j-s></x-icon-j-s>
 </body>
+
+</html>
