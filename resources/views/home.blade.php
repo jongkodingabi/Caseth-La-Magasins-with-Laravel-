@@ -179,6 +179,7 @@
                 <button type="submit" class="btn">Submit</button>
             </form>
         </div>
+        <x-alert></x-alert>
     </section>
 
     <!-- Contact section end -->

@@ -1,7 +1,6 @@
 <!-- Navbar Start -->
 <nav class="navbar" x-data>
     <a href="#" class="navbar-logo">Caseth<span> La Magasin's</span>.</a>
-    <a href="#" class="navbar-logo"></a>
 
     <div class="navbar-nav">
         @auth
@@ -24,9 +23,19 @@
                 <span class="quantity-badge">{{ $totalItems ?? 0 }}</span>
             </a>
 
+            <a href="{{ route('order.show') }}" id="shopping-cart-button">
+                <i data-feather="clock" class="fill_current"></i>
+            </a>
+
             <a href="{{ route('profile.edit') }}">
                 <label for="profil" class="cursor-pointer" id="userIcon" style="cursor: pointer;">
                     <i data-feather="user" class="fill_current"></i>
+                </label>
+            </a>
+
+            <a href="/search">
+                <label for="search" class="cursor-pointer" id="searchIcon" style="cursor: pointer;">
+                    <i data-feather="search" class="fill_current"></i>
                 </label>
             </a>
         </div>

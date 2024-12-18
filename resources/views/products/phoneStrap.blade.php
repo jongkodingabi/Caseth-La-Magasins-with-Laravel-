@@ -6,7 +6,7 @@
 <body>
     <x-navbar></x-navbar>
     <section class="relative h-[50vh] bg-cover bg-center"
-        style="background-image: url(' {{ asset('asset-views/img/hero-bg.jpg') }} ')">
+        style="background-image: url(' {{ asset('asset-views/img/category/Phonestrap.png') }} ')">
         <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
             <h1 class="text-white text-4xl font-bold"><span>Phone Strap</span> Products</h1>
             <p class="py-3 text-base text-rose-300">Offers Phone Strap that can beautify your day.</p>

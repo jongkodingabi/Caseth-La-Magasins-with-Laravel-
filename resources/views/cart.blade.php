@@ -2,6 +2,7 @@
 <x-header>
     <link rel="stylesheet" href="{{ asset('asset-views/css/style2.css?v=1.0') }}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </section>
 </x-header>
 
 <body>
@@ -140,28 +141,26 @@
 
                         <form action="{{ route('cart.checkCost') }}" method="POST">
                             @csrf
+                            {{-- Kota Asal --}}
                             <label for="origin"
-                                class="flex items-center mb-1.5 text-gray-600 text-sm font-medium">Pilih Kota Asal
-                            </label>
+                                class="flex items-center mb-1.5 text-gray-600 text-sm font-medium">Kota Asal</label>
                             <div class="flex pb-6">
                                 <div class="relative w-full z-10">
                                     <select name="origin" id="origin"
                                         class="block w-full h-11 pr-10 pl-4 text-base font-normal
-                                shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-gray-400"
-                                        required>
-                                        <option value="">Pilih Kota Asal</option>
-                                        @if (!@empty($cities))
-                                            @foreach ($cities as $city)
-                                                <option value="{{ $city['city_id'] }}">{{ $city['city_name'] }}
-                                                </option>
-                                            @endforeach
+                                        shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-gray-400"
+                                        readonly>
+                                        @if (!empty($bogorCity))
+                                            <option value="{{ $bogorCity['city_id'] }}" selected>
+                                                {{ $bogorCity['city_name'] }}</option>
                                         @else
-                                            <option value="">Data Kota Tidak tersedia</option>
+                                            <option value="">Data Kota Tidak Tersedia</option>
                                         @endif
                                     </select>
                                 </div>
                             </div>
 
+                            {{-- Kota Tujuan Pemesanan --}}
                             <label for="destination"
                                 class="flex items-center mb-1.5 text-gray-600 text-sm font-medium">Pilih Kota Tujuan
                             </label>
@@ -184,6 +183,7 @@
                                 </div>
                             </div>
 
+                            {{-- Kurir untuk Pemesanan --}}
                             <label for="courier"
                                 class="flex items-center mb-1.5 text-gray-600 text-sm font-medium">Courier
                             </label>
@@ -214,6 +214,20 @@
                                 </div>
                             </div>
 
+                            {{-- Tipe HP untuk produk Casing --}}
+                            <label class="flex items-center mb-1.5 text-gray-400 text-sm font-medium">Tipe Handphone
+                            </label>
+                            <div class="flex pb-4 w-full">
+                                <div class="relative w-full ">
+                                    <div class=" absolute left-0 top-0 py-2.5 px-4 text-gray-300">
+                                    </div>
+                                    <input type="text" name="tipe_hp" id="tipe_hp"
+                                        class="block w-full h-11 pr-11 pl-5 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400 "
+                                        placeholder="Isi jika produk yang dibeli casing">
+                                </div>
+                            </div>
+
+                            {{-- Code Promo --}}
                             <label class="flex items-center mb-1.5 text-gray-400 text-sm font-medium">Code Promo
                             </label>
                             <div class="flex pb-4 w-full">
@@ -226,94 +240,219 @@
                                 </div>
                             </div>
 
+                            {{-- Alamat --}}
                             <label class="flex items-center mb-1.5 text-gray-400 text-sm font-medium">Alamat
                             </label>
                             <div class="flex pb-4 w-full">
                                 <div class="relative w-full ">
                                     <div class=" absolute left-0 top-0 py-2.5 px-4 text-gray-300">
                                     </div>
-                                    <textarea id="" rows="4"
-                                        class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-300 focus:border-rose-300"
+                                    <textarea id="alamat" name="alamat" rows="4"
+                                        class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-300 focus:border-rose-300 focus:outline-none"
                                         placeholder="Mohon Berikan Alamat lengkap" required></textarea>
                                 </div>
                             </div>
+
+                            {{-- Request Pesanan --}}
+                            <label class="flex items-center mb-1.5 text-gray-400 text-sm font-medium">Masukkan Untuk
+                                Produk
+                            </label>
+                            <div class="flex pb-4 w-full">
+                                <div class="relative w-full ">
+                                    <div class=" absolute left-0 top-0 py-2.5 px-4 text-gray-300">
+                                    </div>
+                                    <textarea id="masukkan" name="masukkan" rows="4"
+                                        class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-300 focus:border-rose-300 focus:outline-none"
+                                        placeholder="Contoh: Request warna casing megamendung nya merah ya" required></textarea>
+                                </div>
+                            </div>
+
+
+                            {{-- Button Kirim --}}
                             <div class="flex items-center border-b border-gray-200">
                                 <input type="submit" name="checkCost"
                                     class="rounded-lg w-full bg-rose-400 py-2.5 px-4 text-white text-sm font-semibold text-center mb-8 transition-all duration-500 hover:bg-rose-300">
                             </div>
-                            {{-- Order Sumarry End --}}
+                        </form>
+
+                        {{-- Order Sumarry End --}}
 
 
-                            {{-- Apply Cost Start --}}
-                            <div class="mt-5">
-                                @if (!empty($cost))
-                                    <h4 class="mb-3 font-bold">Rincian Ongkir</h4>
-                                    <h2 class="mb-3">
-                                        <ul>
-                                            @if (isset($originDetails['city_name']) && isset($destinationDetails['city_name']))
-                                                <li class="font-semibold">Asal Kota: <span
-                                                        class="font-light">{{ $originDetails['city_name'] ?? 'Tidak tersedia' }}</span>
-                                                </li>
-                                                <li class="font-semibold">Kota Tujuan: <span
-                                                        class="font-light">{{ $destinationDetails['city_name'] ?? 'Tidak tersedia' }}</span>
-                                                </li>
-                                            @else
-                                                <p class="text-gray-500">Detail kota asal atau tujuan belum tersedia.
-                                                </p>
-                                            @endif
-
-                                            <li class="font-semibold">Berat Paket: <span
-                                                    class="font-light">{{ $weight ?? 'Tidak tersedia' }} gram</span>
+                        {{-- Apply Cost Start --}}
+                        <div class="mt-5">
+                            @if (!empty($cost))
+                                <h4 class="mb-3 font-bold">Rincian Ongkir</h4>
+                                <h2 class="mb-3">
+                                    <ul>
+                                        @if (isset($originDetails['city_name']) && isset($destinationDetails['city_name']))
+                                            <li class="font-semibold">Asal Kota: <span
+                                                    class="font-light">{{ $originDetails['city_name'] ?? 'Tidak tersedia' }}</span>
                                             </li>
-                                        </ul>
-                                    </h2>
+                                            <li class="font-semibold">Kota Tujuan: <span
+                                                    class="font-light">{{ $destinationDetails['city_name'] ?? 'Tidak tersedia' }}</span>
+                                            </li>
+                                        @else
+                                            <p class="text-gray-500">Detail kota asal atau tujuan belum
+                                                tersedia.
+                                            </p>
+                                        @endif
+
+                                        <li class="font-semibold">Berat Paket: <span
+                                                class="font-light">{{ $weight ?? 'Tidak tersedia' }}
+                                                gram</span>
+                                        </li>
+                                    </ul>
+                                </h2>
 
 
-                                    @foreach ($cost as $TotalCost)
-                                        <div>
-                                            <label for="name">Name: {{ $TotalCost['name'] }}</label>
-                                            @foreach ($TotalCost['costs'] as $costs)
-                                                <div class="mb-3">
-                                                    <label for="service">Service: {{ $costs['service'] }}</label>
-                                                    @foreach ($costs['cost'] as $value)
-                                                        <div class="mb-3">
-                                                            <label for="value">
-                                                                Price: Rp.{{ number_format($value['value'], 2) }} (est:
-                                                                {{ $value['etd'] }} day)
-                                                            </label>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                            @break
-                                        @endforeach
-                                    </div>
-                                @endforeach
+                                @foreach ($cost as $TotalCost)
+                                    <div>
+                                        <label for="name">Name: {{ $TotalCost['name'] }}</label>
+                                        @foreach ($TotalCost['costs'] as $costs)
+                                            <div class="mb-3">
+                                                <label for="service">Service: {{ $costs['service'] }}</label>
+                                                @foreach ($costs['cost'] as $value)
+                                                    <div class="mb-3">
+                                                        <label for="value">
+                                                            Price: Rp.{{ number_format($value['value'], 2) }}
+                                                            (est:
+                                                            {{ $value['etd'] }} day)
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @break
+
+                                    @endforeach
+                                </div>
+                            @endforeach
+                    </div>
+
+                    @if (!empty($tipe_hp))
+                        <div class="flex items-center justify-between mb-2">
+                            {{-- Tipe HP --}}
+                            <p class="font-semibold text-slate-500 leading-8">Tipe HP</p>
+                            <p class="font-light text-xl leading-8 text-rose-300">
+                                {{ $tipe_hp }}</p>
                         </div>
-                        <div class="flex items-center justify-between py-8">
-                            <p class="font-semibold text-xl text-slate-500 leading-8">Promo</p>
-                            <p class="font-semibold text-xl leading-8 text-rose-300">Rp
-                                - {{ number_format($promo, 2) }}</p>
-                        </div>
-                        <div class="flex items-center justify-between py-8">
-                            <p class="font-medium text-xl leading-8 text-black">{{ $totalItems }} Items</p>
-                            <p class="font-semibold text-xl leading-8 text-rose-300">Rp
-                                {{ number_format($totalAll, 2) }}</p>
-                        </div>
+                        <hr>
+                    @endif
+
+                    <div class="flex items-center justify-between mb-2">
+                        {{-- Request Produk --}}
+                        <p class="font-semibold text-slate-500 leading-8">Masukkan</p>
+                        <p class="font-light text-base leading-8 text-rose-300">
+                            {{ $masukkan }}</p>
+                    </div>
+                    <hr>
+
+                    <div class="flex items-center justify-between">
+                        {{-- Alamat User Ketika di Input --}}
+                        <p class="font-semibold text-slate-500 leading-8 mb-2">Alamat</p>
+                        <p class="font-light text-base leading-8 text-rose-300">{{ $alamat }}</p>
+                    </div>
+                    <hr>
+
+                    <div class="flex items-center justify-between mb-2">
+                        {{-- Promo --}}
+                        <p class="font-semibold text-slate-500 leading-8">Promo</p>
+                        <p class="font-light text-xl leading-8 text-rose-300">Rp
+                            - {{ number_format($promo, 2) }}</p>
+                    </div>
+                    <hr>
+
+                    {{-- Total Harga --}}
+                    <div class="flex items-center justify-between py-8">
+                        <p class="font-medium text-xl leading-8 text-black">{{ $totalItems }} Items</p>
+                        <p class="font-semibold text-xl leading-8 text-rose-300">Rp
+                            {{ number_format($totalAll, 2) }}</p>
+                    </div>
+
+                    @if (!empty($promo) && $promo > 0)
                         <h2 class="text-base text-rose-300">Promo Diaktifkan</h2>
+                    @endif
+
+                    <form action="{{ route('submitPayment') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-4">
+                            <label for="origin" class="block text-gray-700">Kota Asal:</label>
+                            <input type="text" name="origin_display"
+                                value="{{ old('origin_display', isset($originDetails['city_name']) ? $originDetails['city_name'] : 'Tidak diketahui') }}"
+                                class="input" disabled>
+                            <input type="hidden" name="origin"
+                                value="{{ old('origin', isset($originDetails['city_name']) ? $originDetails['city_name'] : '') }}">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="destination" class="block text-gray-700">Kota Tujuan:</label>
+                            <input type="text" name="destination_display"
+                                value="{{ old('destination_display', isset($destinationDetails['city_name']) ? $destinationDetails['city_name'] : 'Tidak diketahui') }}"
+                                class="input" disabled>
+                            <input type="hidden" name="destination"
+                                value="{{ old('destination', isset($destinationDetails['city_name']) ? $destinationDetails['city_name'] : '') }}">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="weight" class="block text-gray-700">Berat (gram):</label>
+                            <input type="text" name="weight_display" value="{{ old('weight', $weight) }}"
+                                class="input" disabled>
+                            <input type="hidden" name="weight" value="{{ old('weight', $weight) }}">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="alamat" class="block text-gray-700">Tipe HP:</label>
+                            <input type="text" name="tipe_hp_display" value="{{ old('tipe_hp', $tipe_hp) }}"
+                                class="input" disabled>
+                            <input type="hidden" name="tipe_hp" value="{{ old('tipe_hp', $tipe_hp) }}">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="alamat" class="block text-gray-700">Alamat:</label>
+                            <input type="text" name="alamat_display" value="{{ old('alamat', $alamat) }}"
+                                class="input" disabled>
+                            <input type="hidden" name="alamat" value="{{ old('alamat', $alamat) }}">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="alamat" class="block text-gray-700">Masukkan:</label>
+                            <input type="text" name="masukkan_display"
+                                value="{{ old('masukkan', $masukkan) }}" class="input" disabled>
+                            <input type="hidden" name="masukkan" value="{{ old('masukkan', $masukkan) }}">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="totalAll" class="block text-gray-700">Total Pembayaran:</label>
+                            <input type="text" name="total_all" id="totalAll"
+                                value="{{ old('total_all', $totalAll) }}" class="input">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="bukti_pembayaran" class="block text-gray-700">Bukti Pembayaran:</label>
+                            <input type="file" name="bukti_pembayaran" class="input"
+                                accept=".jpg,.jpeg,.png,.pdf" required>
+                        </div>
+
                         <button
-                            class="w-full text-center bg-rose-200 rounded-xl py-3 px-6 font-semibold text-lg text-white transition-all duration-500 hover:bg-rose-300">Checkout</button>
+                            class="w-full text-center bg-rose-200 rounded-xl py-3 px-6 font-semibold text-lg text-white transition-all duration-500 hover:bg-rose-300"
+                            type="submit">Checkout</button>
                     </form>
+
                 </div>
                 @endif
-</section>
-<x-footer></x-footer>
-@else
-<p class="text-center font-semibold text-lg">Your cart is empty.</p>
-@endif
-</div>
-{{-- Apply Cost End --}}
-<x-alert></x-alert>
-<x-icon-j-s></x-icon-j-s>
+
+                {{-- jika cart kosong --}}
+            @else
+                <p class="text-center font-semibold text-lg">Your cart is empty.</p>
+                @endif
+                {{-- Apply cost end --}}
+            </div>
+            {{-- <x-footer></x-footer> --}
+
+                </div>
+            </div>
+            {{-- Apply Cost End --}}
+            <x-alert></x-alert>
+            <x-icon-j-s></x-icon-j-s>
 </body>
 
 </html>
